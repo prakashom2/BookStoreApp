@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form"
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 
 function Login() {
@@ -10,7 +12,34 @@ function Login() {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = async (data) => {
+    console.log(data)
+    const userInfo ={
+      email:data.email,
+      password:data.password
+    };
+    await axios.post("http://localhost:4001/user/login", userInfo)
+    .then((res) =>{
+      console.log(res.data)
+      if(res.data){
+        toast.success("Login Sucessfully")
+        document.getElementById("my_modal_3").close()
+        setTimeout(()=>{
+        
+        window.location.reload();
+        localStorage.setItem("Users",JSON.stringify(res.data.user))
+        },1000)
+        
+      }
+      
+    }).catch((err)=>{
+     if(err.response){
+      console.log(err)
+      toast.error("Error: " +err.response.data.message)
+      setTimeout(()=>{},3000)
+     }
+    })
+   }
   return (
     <div>
         {/* You can open the modal using document.getElementById('ID').showModal() method */}
@@ -19,7 +48,7 @@ function Login() {
   <div className="modal-box">
     <form onSubmit={handleSubmit(onSubmit)} method="dialog">
       {/* if there is a button in form, it will close the modal */}
-      <Link to="/" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+      <Link to="/" className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={()=> document.getElementById("my_modal_3").close()}>
         ✕
       </Link>
       </form>

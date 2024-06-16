@@ -1,7 +1,11 @@
 import React, { Component, useEffect, useState } from 'react'
 import Login from './Login';
-
+import Logout from './Logout';
+import { useAuth } from './context/Authprovider';
 function Navbar() {
+  const [authUser,setAuthUser] = useAuth();
+  console.log(authUser);
+
   const [sticky, setSticky] = useState(false);
   useEffect(()=>{
     const handelScroll=() =>{
@@ -69,10 +73,13 @@ function Navbar() {
 
 </label>
 
-    <div className="" space-x-3 >
+    {
+      authUser?<Logout />:
+      <div className="" space-x-3 >
     <a className=" mx-3 bg-black text-white px-2 py-2 rounded-md hover:bg-slate-800 duration-300 cursor-pointer on" onClick={()=>document.getElementById("my_modal_3").showModal()}>Login</a>
     <Login />
     </div>
+        }
   </div>
   
   </div>
